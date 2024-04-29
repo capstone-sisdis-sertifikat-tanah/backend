@@ -8,8 +8,7 @@ sleep 5
 
 sleep 5
 
-CC_NAME="basic"
-CC_FOLDER="atcontract"
 
-./network.sh deployCC -ccn $CC_NAME     -ccp ../chaincode/$CC_FOLDER   -ccl go
+
+./network.sh deployCC -ccn atcontract -ccp ../chaincode/atcontract -ccl go
 ./network.sh deployCC -ccn usercontract -ccp ../chaincode/usercontract -ccl go

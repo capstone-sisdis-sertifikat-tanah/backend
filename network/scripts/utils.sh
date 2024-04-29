@@ -85,7 +85,7 @@ function printHelp() {
     println "   \033[0;32mdeployCC\033[0m -ccn -ccl -ccv -ccs -ccp -cci -r -d -verbose"
     println
     println " Examples:"
-    println "   network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-javascript/ ./ -ccl javascript"
+    println "   network.sh deployCC -ccn atcontract -ccp ../asset-transfer-basic/chaincode-javascript/ ./ -ccl javascript"
     println "   network.sh deployCC -ccn mychaincode -ccp ./user/mychaincode -ccv 1 -ccl javascript"
   elif [ "$USAGE" == "deployCCAAS" ]; then
     println "Usage: "
@@ -108,8 +108,8 @@ function printHelp() {
     println "   \033[0;32mdeployCC\033[0m -ccn -ccv -ccs -ccp -cci -r -d -verbose"
     println
     println " Examples:"
-    println "   network.sh deployCCAAS  -ccn basicj -ccp ../asset-transfer-basic/chaincode-java"
-    println "   network.sh deployCCAAS  -ccn basict -ccp ../asset-transfer-basic/chaincode-typescript -ccaasdocker false" 
+    println "   network.sh deployCCAAS  -ccn atcontractj -ccp ../asset-transfer-basic/chaincode-java"
+    println "   network.sh deployCCAAS  -ccn atcontractt -ccp ../asset-transfer-basic/chaincode-typescript -ccaasdocker false" 
   elif [ "$USAGE" == "cc" ] ; then
     println "Usage: "
     println "  network.sh cc <Mode> [Flags]"
@@ -139,7 +139,7 @@ function printHelp() {
     println
     println " Examples:"
     println "   network.sh cc list -org 1"
-    println "   network.sh cc package -ccn basic -ccp chaincode/asset-transfer-basic/go -ccv 1.0.0 -ccl go"
+    println "   network.sh cc package -ccn atcontract -ccp chaincode/asset-transfer-basic/go -ccv 1.0.0 -ccl go"
     println "   network.sh cc invoke -c channel1 -ccic '{\"Args\":[\"CreateAsset\",\"asset1\",\"red\",\"10\",\"fred\",\"500\"]}'"
     println "   network.sh cc query -c channel1 -ccqc '{\"Args\":[\"ReadAsset\",\"asset1\"]}'"
     println
@@ -196,7 +196,7 @@ function printHelp() {
     println " Examples:"
     println "   network.sh up createChannel -ca -c bpnchannel -s couchdb"
     println "   network.sh createChannel -c channelName"
-    println "   network.sh deployCC -ccn basic -ccp ../asset-transfer-basic/chaincode-javascript/ -ccl javascript"
+    println "   network.sh deployCC -ccn atcontract -ccp ../asset-transfer-basic/chaincode-javascript/ -ccl javascript"
     println "   network.sh deployCC -ccn mychaincode -ccp ./user/mychaincode -ccv 1 -ccl javascript"
     println
     println " NOTE: Default settings can be changed in network.config"
