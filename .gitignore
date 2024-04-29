@@ -12,14 +12,14 @@ api/node_modules/
 /ledgers-backup
 /channel-artifacts/*.json
 /org3-artifacts/crypto-config/*
-organizations
+# organizations
 system-genesis-block/*
 *.tar.gz
 log.txt
 bin
 builders
 channel-artifacts
-config
+# config
 
 #Go
 */vendor
