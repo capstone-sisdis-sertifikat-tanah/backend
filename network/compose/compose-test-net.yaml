@@ -7,7 +7,7 @@ version: '3.7'
 
 volumes:
   orderer.example.com:
-  peer0.badanpertahanannasional.example.com:
+  peer0.badanpertanahannasional.example.com:
   peer0.user.example.com:
 
 networks:
@@ -58,8 +58,8 @@ services:
     networks:
       - blockchain_sertifikat_tanah
 
-  peer0.badanpertahanannasional.example.com:
-    container_name: peer0.badanpertahanannasional.example.com
+  peer0.badanpertanahannasional.example.com:
+    container_name: peer0.badanpertanahannasional.example.com
     image: hyperledger/fabric-peer:2.5.5
     labels:
       service: hyperledger-fabric
@@ -73,22 +73,22 @@ services:
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
       # Peer specific variables
-      - CORE_PEER_ID=peer0.badanpertahanannasional.example.com
-      - CORE_PEER_ADDRESS=peer0.badanpertahanannasional.example.com:7051
+      - CORE_PEER_ID=peer0.badanpertanahannasional.example.com
+      - CORE_PEER_ADDRESS=peer0.badanpertanahannasional.example.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-      - CORE_PEER_CHAINCODEADDRESS=peer0.badanpertahanannasional.example.com:7052
+      - CORE_PEER_CHAINCODEADDRESS=peer0.badanpertanahannasional.example.com:7052
       - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.badanpertahanannasional.example.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.badanpertahanannasional.example.com:7051
-      - CORE_PEER_LOCALMSPID=BadanPertahananNasionalMSP
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.badanpertanahannasional.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.badanpertanahannasional.example.com:7051
+      - CORE_PEER_LOCALMSPID=BadanPertanahanNasionalMSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
-      - CORE_OPERATIONS_LISTENADDRESS=peer0.badanpertahanannasional.example.com:9444
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.badanpertanahannasional.example.com:9444
       - CORE_METRICS_PROVIDER=prometheus
-      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0badanpertahanannasional"}
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peer0badanpertanahannasional"}
       - CORE_CHAINCODE_EXECUTETIMEOUT=300s
     volumes:
-      - ../organizations/peerOrganizations/badanpertahanannasional.example.com/peers/peer0.badanpertahanannasional.example.com:/etc/hyperledger/fabric
-      - peer0.badanpertahanannasional.example.com:/var/hyperledger/production
+      - ../organizations/peerOrganizations/badanpertanahannasional.example.com/peers/peer0.badanpertanahannasional.example.com:/etc/hyperledger/fabric
+      - peer0.badanpertanahannasional.example.com:/var/hyperledger/production
     working_dir: /root
     command: peer node start
     ports:
@@ -154,7 +154,7 @@ services:
       - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
       - ../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
     depends_on:
-      - peer0.badanpertahanannasional.example.com
+      - peer0.badanpertanahannasional.example.com
       - peer0.user.example.com
     networks:
       - blockchain_sertifikat_tanah

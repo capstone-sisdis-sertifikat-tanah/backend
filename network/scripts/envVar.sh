@@ -12,7 +12,7 @@
 
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
-export PEER0_BADANPERTAHANANNASIONAL_CA=${PWD}/organizations/peerOrganizations/badanpertahanannasional.example.com/tlsca/tlsca.badanpertahanannasional.example.com-cert.pem
+export PEER0_BADANPERTANAHANNASIONAL_CA=${PWD}/organizations/peerOrganizations/badanpertanahannasional.example.com/tlsca/tlsca.badanpertanahannasional.example.com-cert.pem
 export PEER0_USER_CA=${PWD}/organizations/peerOrganizations/user.example.com/tlsca/tlsca.user.example.com-cert.pem
 export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/org3.example.com/tlsca/tlsca.org3.example.com-cert.pem
 
@@ -25,10 +25,10 @@ setGlobals() {
     USING_ORG="${OVERRIDE_ORG}"
   fi
   infoln "Using organization ${USING_ORG}"
-  if [ $USING_ORG = 'badanpertahanannasional' ]; then
-    export CORE_PEER_LOCALMSPID="BadanPertahananNasionalMSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_BADANPERTAHANANNASIONAL_CA
-    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/badanpertahanannasional.example.com/users/Admin@badanpertahanannasional.example.com/msp
+  if [ $USING_ORG = 'badanpertanahannasional' ]; then
+    export CORE_PEER_LOCALMSPID="BadanPertanahanNasionalMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_BADANPERTANAHANNASIONAL_CA
+    export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/badanpertanahannasional.example.com/users/Admin@badanpertanahannasional.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
   elif [ $USING_ORG = 'user' ]; then
     export CORE_PEER_LOCALMSPID="UserMSP"
@@ -60,8 +60,8 @@ setGlobalsCLI() {
   else
     USING_ORG="${OVERRIDE_ORG}"
   fi
-  if [ $USING_ORG = 'badanpertahanannasional' ]; then
-    export CORE_PEER_ADDRESS=peer0.badanpertahanannasional.example.com:7051
+  if [ $USING_ORG = 'badanpertanahannasional' ]; then
+    export CORE_PEER_ADDRESS=peer0.badanpertanahannasional.example.com:7051
   elif [ $USING_ORG = 'user' ]; then
     export CORE_PEER_ADDRESS=peer0.user.example.com:9051
   elif [ $USING_ORG -eq 3 ]; then

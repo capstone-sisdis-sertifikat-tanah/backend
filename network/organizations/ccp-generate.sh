@@ -28,15 +28,15 @@ function yaml_ccp {
         organizations/ccp-template.yaml | sed -e $'s/\\\\n/\\\n          /g'
 }
 
-ORG=badanpertahanannasional
-ORGCAP=BadanPertahananNasional
+ORG=badanpertanahannasional
+ORGCAP=BadanPertanahanNasional
 P0PORT=7051
 CAPORT=7054
-PEERPEM=organizations/peerOrganizations/badanpertahanannasional.example.com/tlsca/tlsca.badanpertahanannasional.example.com-cert.pem
-CAPEM=organizations/peerOrganizations/badanpertahanannasional.example.com/ca/ca.badanpertahanannasional.example.com-cert.pem
+PEERPEM=organizations/peerOrganizations/badanpertanahannasional.example.com/tlsca/tlsca.badanpertanahannasional.example.com-cert.pem
+CAPEM=organizations/peerOrganizations/badanpertanahannasional.example.com/ca/ca.badanpertanahannasional.example.com-cert.pem
 
-echo "$(json_ccp $ORG $ORGCAP $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/badanpertahanannasional.example.com/connection-badanpertahanannasional.json
-echo "$(yaml_ccp $ORG $ORGCAP $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/badanpertahanannasional.example.com/connection-badanpertahanannasional.yaml
+echo "$(json_ccp $ORG $ORGCAP $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/badanpertanahannasional.example.com/connection-badanpertanahannasional.json
+echo "$(yaml_ccp $ORG $ORGCAP $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/badanpertanahannasional.example.com/connection-badanpertanahannasional.yaml
 
 ORG=user
 ORGCAP=User

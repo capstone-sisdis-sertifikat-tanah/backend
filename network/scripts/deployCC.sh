@@ -73,38 +73,38 @@ checkPrereqs
 
 PACKAGE_ID=$(peer lifecycle chaincode calculatepackageid ${CC_NAME}.tar.gz)
 
-## Install chaincode on peer0.badanpertahanannasional and peer0.user
-infoln "Installing chaincode on peer0.badanpertahanannasional..."
-installChaincode 'badanpertahanannasional'
+## Install chaincode on peer0.badanpertanahannasional and peer0.user
+infoln "Installing chaincode on peer0.badanpertanahannasional..."
+installChaincode 'badanpertanahannasional'
 infoln "Install chaincode on peer0.user..."
 installChaincode 'user'
 
 resolveSequence
 
 ## query whether the chaincode is installed
-queryInstalled 'badanpertahanannasional'
+queryInstalled 'badanpertanahannasional'
 
-## approve the definition for badanpertahanannasional
-approveForMyOrg 'badanpertahanannasional'
+## approve the definition for badanpertanahannasional
+approveForMyOrg 'badanpertanahannasional'
 
 ## check whether the chaincode definition is ready to be committed
-## expect badanpertahanannasional to have approved and user not to
-checkCommitReadiness 'badanpertahanannasional' "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": false"
-checkCommitReadiness 'user' "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": false"
+## expect badanpertanahannasional to have approved and user not to
+checkCommitReadiness 'badanpertanahannasional' "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": false"
+checkCommitReadiness 'user' "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": false"
 
 ## now approve also for user
 approveForMyOrg 'user'
 
 ## check whether the chaincode definition is ready to be committed
 ## expect them both to have approved
-checkCommitReadiness 'badanpertahanannasional' "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": true"
-checkCommitReadiness 'user' "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": true"
+checkCommitReadiness 'badanpertanahannasional' "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": true"
+checkCommitReadiness 'user' "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
-commitChaincodeDefinition 'badanpertahanannasional' 'user'
+commitChaincodeDefinition 'badanpertanahannasional' 'user'
 
 ## query on both orgs to see that the definition committed successfully
-queryCommitted 'badanpertahanannasional'
+queryCommitted 'badanpertanahannasional'
 queryCommitted 'user'
 
 ## Invoke the chaincode - this does require that the chaincode have the 'initLedger'
@@ -112,7 +112,7 @@ queryCommitted 'user'
 if [ "$CC_INIT_FCN" = "NA" ]; then
   infoln "Chaincode initialization is not required"
 else
-  chaincodeInvokeInit 'badanpertahanannasional' 'user'
+  chaincodeInvokeInit 'badanpertanahannasional' 'user'
 fi
 
 exit 0

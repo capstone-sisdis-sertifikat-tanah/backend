@@ -132,7 +132,7 @@ startDockerContainer() {
   if [ "$CCAAS_DOCKER_RUN" = "true" ]; then
     infoln "Starting the Chaincode-as-a-Service docker container..."
     set -x
-    ${CONTAINER_CLI} run --rm -d --name peer0badanpertahanannasional_${CC_NAME}_ccaas  \
+    ${CONTAINER_CLI} run --rm -d --name peer0badanpertanahannasional_${CC_NAME}_ccaas  \
                   --network blockchain_sertifikat_tanah \
                   -e CHAINCODE_SERVER_ADDRESS=0.0.0.0:${CCAAS_SERVER_PORT} \
                   -e CHAINCODE_ID=$PACKAGE_ID -e CORE_CHAINCODE_ID_NAME=$PACKAGE_ID \
@@ -151,7 +151,7 @@ startDockerContainer() {
   else
   
     infoln "Not starting docker containers; these are the commands we would have run"
-    infoln "    ${CONTAINER_CLI} run --rm -d --name peer0badanpertahanannasional_${CC_NAME}_ccaas  \
+    infoln "    ${CONTAINER_CLI} run --rm -d --name peer0badanpertanahannasional_${CC_NAME}_ccaas  \
                   --network blockchain_sertifikat_tanah \
                   -e CHAINCODE_SERVER_ADDRESS=0.0.0.0:${CCAAS_SERVER_PORT} \
                   -e CHAINCODE_ID=$PACKAGE_ID -e CORE_CHAINCODE_ID_NAME=$PACKAGE_ID \
@@ -171,8 +171,8 @@ buildDockerImages
 ## package the chaincode
 packageChaincode
 
-## Install chaincode on peer0.badanpertahanannasional and peer0.user
-infoln "Installing chaincode on peer0.badanpertahanannasional..."
+## Install chaincode on peer0.badanpertanahannasional and peer0.user
+infoln "Installing chaincode on peer0.badanpertanahannasional..."
 installChaincode 1
 infoln "Install chaincode on peer0.user..."
 installChaincode 2
@@ -182,21 +182,21 @@ resolveSequence
 ## query whether the chaincode is installed
 queryInstalled 1
 
-## approve the definition for badanpertahanannasional
+## approve the definition for badanpertanahannasional
 approveForMyOrg 1
 
 ## check whether the chaincode definition is ready to be committed
-## expect badanpertahanannasional to have approved and user not to
-checkCommitReadiness 1 "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": false"
-checkCommitReadiness 2 "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": false"
+## expect badanpertanahannasional to have approved and user not to
+checkCommitReadiness 1 "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": false"
+checkCommitReadiness 2 "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": false"
 
 ## now approve also for user
 approveForMyOrg 2
 
 ## check whether the chaincode definition is ready to be committed
 ## expect them both to have approved
-checkCommitReadiness 1 "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": true"
-checkCommitReadiness 2 "\"BadanPertahananNasionalMSP\": true" "\"UserMSP\": true"
+checkCommitReadiness 1 "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": true"
+checkCommitReadiness 2 "\"BadanPertanahanNasionalMSP\": true" "\"UserMSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
 commitChaincodeDefinition 1 2

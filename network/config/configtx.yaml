@@ -40,29 +40,29 @@ Organizations:
     OrdererEndpoints:
       - orderer.example.com:7050
 
-  - &BadanPertahananNasional
+  - &BadanPertanahanNasional
     # DefaultOrg defines the organization which is used in the sampleconfig
     # of the fabric.git development environment
-    Name: BadanPertahananNasionalMSP
+    Name: BadanPertanahanNasionalMSP
     # ID to load the MSP definition as
-    ID: BadanPertahananNasionalMSP
-    MSPDir: ../organizations/peerOrganizations/badanpertahanannasional.example.com/msp
+    ID: BadanPertanahanNasionalMSP
+    MSPDir: ../organizations/peerOrganizations/badanpertanahannasional.example.com/msp
     # Policies defines the set of policies at this level of the config tree
     # For organization policies, their canonical path is usually
     #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
     Policies:
       Readers:
         Type: Signature
-        Rule: "OR('BadanPertahananNasionalMSP.admin', 'BadanPertahananNasionalMSP.peer', 'BadanPertahananNasionalMSP.client')"
+        Rule: "OR('BadanPertanahanNasionalMSP.admin', 'BadanPertanahanNasionalMSP.peer', 'BadanPertanahanNasionalMSP.client')"
       Writers:
         Type: Signature
-        Rule: "OR('BadanPertahananNasionalMSP.admin', 'BadanPertahananNasionalMSP.client')"
+        Rule: "OR('BadanPertanahanNasionalMSP.admin', 'BadanPertanahanNasionalMSP.client')"
       Admins:
         Type: Signature
-        Rule: "OR('BadanPertahananNasionalMSP.admin')"
+        Rule: "OR('BadanPertanahanNasionalMSP.admin')"
       Endorsement:
         Type: Signature
-        Rule: "OR('BadanPertahananNasionalMSP.peer')"
+        Rule: "OR('BadanPertanahanNasionalMSP.peer')"
 
   - &User
     # DefaultOrg defines the organization which is used in the sampleconfig
@@ -277,6 +277,6 @@ Profiles:
     Application:
       <<: *ApplicationDefaults
       Organizations:
-        - *BadanPertahananNasional
+        - *BadanPertanahanNasional
         - *User
       Capabilities: *ApplicationCapabilities

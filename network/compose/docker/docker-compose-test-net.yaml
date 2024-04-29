@@ -5,8 +5,8 @@
 
 version: '3.7'
 services:
-  peer0.badanpertahanannasional.example.com:
-    container_name: peer0.badanpertahanannasional.example.com
+  peer0.badanpertanahannasional.example.com:
+    container_name: peer0.badanpertanahannasional.example.com
     image: hyperledger/fabric-peer:2.5.5
     labels:
       service: hyperledger-fabric

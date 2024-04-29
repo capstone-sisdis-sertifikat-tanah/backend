@@ -17,8 +17,8 @@ createAnchorPeerUpdate() {
 
   infoln "Generating anchor peer update transaction for ${ORG} on channel $CHANNEL_NAME"
 
-  if [ $ORG = 'badanpertahanannasional' ]; then
-    HOST="peer0.badanpertahanannasional.example.com"
+  if [ $ORG = 'badanpertanahannasional' ]; then
+    HOST="peer0.badanpertanahannasional.example.com"
     PORT=7051
   elif [ $ORG = 'user' ]; then
     HOST="peer0.user.example.com"

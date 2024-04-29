@@ -80,7 +80,7 @@ tls:
 #############################################################################
 ca:
   # Name of this CA
-  name: UserCA
+  name: BadanPertanahanNasionalCA
   # Key file (is only used to import a private key into BCCSP)
   keyfile:
   # Certificate file (default: ca-cert.pem)
@@ -237,7 +237,7 @@ ldap:
 # which are always stored in lower case.
 #############################################################################
 affiliations:
-   badanpertahanannasional:
+   badanpertanahannasional:
       - department1
       - department2
    user:
@@ -301,16 +301,16 @@ signing:
 #     CA certificates though it can still issue end entity certificates.
 ###########################################################################
 csr:
-   cn: ca.user.example.com
+   cn: ca.badanpertanahannasional.example.com
    names:
       - C: ID
-        ST: 
+        ST:
         L: "Jakarta"
-        O: user.example.com
+        O: badanpertanahannasional.example.com
         OU:
    hosts:
      - localhost
-     - user.example.com
+     - badanpertanahannasional.example.com
    ca:
       expiry: 131400h
       pathlength: 1

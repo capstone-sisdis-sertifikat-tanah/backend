@@ -25,7 +25,7 @@ if [ ! -d "channel-artifacts" ]; then
 fi
 
 createChannelGenesisBlock() {
-  setGlobals 'badanpertahanannasional'
+  setGlobals 'badanpertanahannasional'
 	which configtxgen
 	if [ "$?" -ne 0 ]; then
 		fatalln "configtxgen tool not found."
@@ -116,14 +116,14 @@ createChannel $BFT
 successln "Channel '$CHANNEL_NAME' created"
 
 ## Join all the peers to the channel
-infoln "Joining badanpertahanannasional peer to the channel..."
-joinChannel 'badanpertahanannasional'
+infoln "Joining badanpertanahannasional peer to the channel..."
+joinChannel 'badanpertanahannasional'
 infoln "Joining user peer to the channel..."
 joinChannel 'user'
 
 ## Set the anchor peers for each org in the channel
-infoln "Setting anchor peer for badanpertahanannasional..."
-setAnchorPeer 'badanpertahanannasional'
+infoln "Setting anchor peer for badanpertanahannasional..."
+setAnchorPeer 'badanpertanahannasional'
 infoln "Setting anchor peer for user..."
 setAnchorPeer 'user'
 

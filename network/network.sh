@@ -164,16 +164,16 @@ function createOrgs() {
 
     while :
     do
-      if [ ! -f "organizations/fabric-ca/badanpertahanannasional/tls-cert.pem" ]; then
+      if [ ! -f "organizations/fabric-ca/badanpertanahannasional/tls-cert.pem" ]; then
         sleep 1
       else
         break
       fi
     done
 
-    infoln "Creating BadanPertahananNasional Identities"
+    infoln "Creating BadanPertanahanNasional Identities"
 
-    createBadanPertahananNasional
+    createBadanPertanahanNasional
 
     infoln "Creating User Identities"
 
@@ -185,7 +185,7 @@ function createOrgs() {
 
   fi
 
-  infoln "Generating CCP files for BadanPertahananNasional and User"
+  infoln "Generating CCP files for BadanPertanahanNasional and User"
   ./organizations/ccp-generate.sh
 }
 
@@ -239,7 +239,7 @@ function networkUp() {
   fi
 }
 
-# call the script to create the channel, join the peers of badanpertahanannasional and user,
+# call the script to create the channel, join the peers of badanpertanahannasional and user,
 # and then update the anchor peers for each organization
 function createChannel() {
   # Bring up the network if it is not already up.
@@ -360,7 +360,7 @@ function networkDown() {
   COMPOSE_CA_FILES="-f compose/${COMPOSE_FILE_CA} -f compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_CA}"
   COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
 
-  # stop org3 containers also in addition to badanpertahanannasional and user, in case we were running sample to add org3
+  # stop org3 containers also in addition to badanpertanahannasional and user, in case we were running sample to add org3
   COMPOSE_ORG3_BASE_FILES="-f addOrg3/compose/${COMPOSE_FILE_ORG3_BASE} -f addOrg3/compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_ORG3_BASE}"
   COMPOSE_ORG3_COUCH_FILES="-f addOrg3/compose/${COMPOSE_FILE_ORG3_COUCH} -f addOrg3/compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_ORG3_COUCH}"
   COMPOSE_ORG3_CA_FILES="-f addOrg3/compose/${COMPOSE_FILE_ORG3_CA} -f addOrg3/compose/${CONTAINER_CLI}/${CONTAINER_CLI}-${COMPOSE_FILE_ORG3_CA}"
@@ -379,7 +379,7 @@ function networkDown() {
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
     # Bring down the network, deleting the volumes
-    ${CONTAINER_CLI} volume rm docker_orderer.example.com docker_peer0.badanpertahanannasional.example.com docker_peer0.user.example.com
+    ${CONTAINER_CLI} volume rm docker_orderer.example.com docker_peer0.badanpertanahannasional.example.com docker_peer0.user.example.com
     #Cleanup the chaincode containers
     clearContainers
     #Cleanup images
@@ -387,7 +387,7 @@ function networkDown() {
     # remove orderer block and other channel configuration transactions and certs
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf system-genesis-block/*.block organizations/peerOrganizations organizations/ordererOrganizations'
     ## remove fabric ca artifacts
-    ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/badanpertahanannasional/msp organizations/fabric-ca/badanpertahanannasional/tls-cert.pem organizations/fabric-ca/badanpertahanannasional/ca-cert.pem organizations/fabric-ca/badanpertahanannasional/IssuerPublicKey organizations/fabric-ca/badanpertahanannasional/IssuerRevocationPublicKey organizations/fabric-ca/badanpertahanannasional/fabric-ca-server.db'
+    ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/badanpertanahannasional/msp organizations/fabric-ca/badanpertanahannasional/tls-cert.pem organizations/fabric-ca/badanpertanahannasional/ca-cert.pem organizations/fabric-ca/badanpertanahannasional/IssuerPublicKey organizations/fabric-ca/badanpertanahannasional/IssuerRevocationPublicKey organizations/fabric-ca/badanpertanahannasional/fabric-ca-server.db'
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/user/msp organizations/fabric-ca/user/tls-cert.pem organizations/fabric-ca/user/ca-cert.pem organizations/fabric-ca/user/IssuerPublicKey organizations/fabric-ca/user/IssuerRevocationPublicKey organizations/fabric-ca/user/fabric-ca-server.db'
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db'
     ${CONTAINER_CLI} run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db'
