@@ -2,6 +2,7 @@ const iResp = require('../utils/response.interface.js')
 const fabric = require('../utils/fabric.js')
 const { BlockDecoder } = require('fabric-common')
 const { bufferToJson } = require('../../utils/converter.js')
+const { v4: uuidv4 } = require('uuid')
 
 const create = async (user, args) => {
   try {
@@ -205,8 +206,72 @@ const approve = async (user, args) => {
       if (args.status === 'approve') {
         result.status = 'Approve'
         result.approvers.push(args.idApproval)
+
+        // Update Akta Tanah 1x Transaction
+        const sertifikatNetwork = await fabric.connectToNetwork(
+          user.organizationName,
+          'certcontract',
+          user.username
+        )
+
+        const userNetwork = await fabric.connectToNetwork(
+          user.organizationName,
+          'usercontract',
+          user.username
+        )
+
+        // Update Sertifikat
+
+        const sertifikat = JSON.parse(
+          await sertifikatNetwork.contract.submitTransaction(
+            'GetCertById',
+            result.dokumen.sertifikat.id
+          )
+        )
+        const user = JSON.parse(
+          await userNetwork.contract.submitTransaction(
+            'GetUserById',
+            result.pembeli.id
+          )
+        )
+        const aktaLama = sertifikat.akta
+        sertifikat.pemilik = user
+        sertifikat.akta = result
+        userNetwork.gateway.disconnect()
+
+        await sertifikatNetwork.contract.submitTransaction(
+          'UpdateSertifikat',
+          JSON.stringify(sertifikat)
+        )
+        sertifikatNetwork.gateway.disconnect()
+
+        // Update Dokumen dan Akta yang sudah tidak berlaku
+
+        const dokumenNetwork = await fabric.connectToNetwork(
+          user.organizationName,
+          'dokcontract',
+          user.username
+        )
+        const dokumen = JSON.parse(
+          await dokumenNetwork.contract.submitTransaction(
+            'GetDokById',
+            result.dokumen.id
+          )
+        )
+        dokumen.status = 'Sudah Tidak Berlaku'
+        await dokumenNetwork.contract.submitTransaction(
+          'UpdateDok',
+          JSON.stringify(dokumen)
+        )
+        dokumenNetwork.gateway.disconnect()
+
+        aktaLama.status = 'Sudah Tidak Berlaku'
+        await network.contract.submitTransaction(
+          'UpdateAkta',
+          JSON.stringify(aktaLama)
+        )
       } else if (args.status === 'reject') {
-        result.status === 'reject'
+        result.status = 'reject'
       }
     } else if (result.status === 'reject') {
       return iResp.buildSuccessResponseWithoutData(200, 'Akta Telah ditolak')

@@ -53,8 +53,8 @@ const update = async (req, res) => {
   const data = req.body
   const args = {
     id: req.params.idSertifikat,
-    idPemilik: data.idPemilik,
-    idAkta: data.idAkta,
+    idPemilik: data.pemilik,
+    idAkta: data.akta,
     lat: data.lat,
     long: data.long,
   }

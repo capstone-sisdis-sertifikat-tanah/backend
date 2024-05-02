@@ -2,6 +2,7 @@ const iResp = require('../utils/response.interface.js')
 const fabric = require('../utils/fabric.js')
 const { BlockDecoder } = require('fabric-common')
 const { bufferToJson } = require('../../utils/converter.js')
+const { v4: uuidv4 } = require('uuid')
 
 const create = async (user, args) => {
   try {
@@ -153,7 +154,7 @@ const verify = async (user, identifier) => {
     const blockDokumen = await network.contract.evaluateTransaction(
       'GetBlockByHash',
       'bpnchannel',
-      Buffer.from(identifier.akta, 'hex')
+      Buffer.from(identifier.dokumen, 'hex')
     )
 
     // Get data from block
@@ -204,31 +205,51 @@ const approve = async (user, args) => {
   try {
     const network = await fabric.connectToNetwork(
       user.organizationName,
-      'aktacontract',
+      'dokcontract',
       user.username
     )
     const result = JSON.parse(
-      await network.contract.submitTransaction('GetAktaById', args.id)
+      await network.contract.submitTransaction('GetDokById', args.id)
     )
     network.gateway.disconnect()
     if (
       (result.status = 'Menunggu Persetujuan Bank' && user.userType === 'bank')
     ) {
       if (args.status === 'approve') {
-        result.status = 'Menunggu Persetujuan BPN'
+        result.status = 'Menunggu Persetujuan Notaris'
         result.approvers.push(args.idApproval)
       } else if (args.status === 'reject') {
-        result.status === 'reject'
+        result.status = 'reject'
       }
     } else if (
       (result.status =
-        'Menunggu Persetujuan BPN' && user.userType === 'admin-bpn')
+        'Menunggu Persetujuan Notaris' && user.userType === 'notaris')
     ) {
       if (args.status === 'approve') {
         result.status = 'Approve'
         result.approvers.push(args.idApproval)
+
+        // Create Akta Tanah
+        const aktaNetwork = await fabric.connectToNetwork(
+          user.organizationName,
+          'aktacontract',
+          user.username
+        )
+        const akta = {
+          id: uuidv4(),
+          idDokumen: result.id,
+          status: 'Menunggu Persetujuan Penjual',
+          idPembeli: result.pembeli.id,
+          idPenjual: result.penjual.id,
+          approvers: [],
+        }
+        await aktaNetwork.contract.submitTransaction(
+          'CreateAKTA',
+          JSON.stringify(akta)
+        )
+        aktaNetwork.gateway.disconnect()
       } else if (args.status === 'reject') {
-        result.status === 'reject'
+        result.status = 'reject'
       }
     } else if (result.status === 'reject') {
       return iResp.buildSuccessResponseWithoutData(200, 'Dokumen Telah ditolak')
