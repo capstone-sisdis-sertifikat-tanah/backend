@@ -4,12 +4,12 @@ const auth = require('../middleware/auth.js')
 
 sertifikatRouter.get(
   '/pemilik/:idPemilik',
-  auth.onlyUser,
+  auth.verifyToken,
   sertifikatController.getCertificateByIdPemilik
 )
 sertifikatRouter.post(
   '/identifier/:idSertifikat',
-  auth.onlyUser,
+  auth.verifyToken,
   sertifikatController.generateIdentifier
 )
 sertifikatRouter.post('/verify', auth.verifyToken, sertifikatController.verify)
@@ -23,6 +23,6 @@ sertifikatRouter.put(
   auth.verifyToken,
   sertifikatController.update
 )
-sertifikatRouter.post('/', auth.onlyUser, sertifikatController.create)
+sertifikatRouter.post('/', auth.verifyToken, sertifikatController.create)
 
 module.exports = sertifikatRouter

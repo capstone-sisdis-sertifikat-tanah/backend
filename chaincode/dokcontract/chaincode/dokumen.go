@@ -30,6 +30,15 @@ type Dokumen struct {
 	Sertifikat   string   `json:"idSertifikat"`
 }
 
+type DokumenShortRes struct {
+	ID           string   `json:"id"`
+	Pembeli		 *User   `json:"pembeli"`
+	Penjual		 *User   `json:"penjual"`
+	Status 		 string   `json:"status"`
+	Approvers 	 []string `json:"approvers"`
+	Sertifikat   string   `json:"idSertifikat"`
+}
+
 type DokumenResult struct {
 	ID           string   	 `json:"id"`
 	Pembeli		 *User     	 `json:"pembeli"`
@@ -154,6 +163,36 @@ func (s *DOKContract) GetDokById(ctx contractapi.TransactionContextInterface) (*
 	return dokResult, nil
 }
 
+func (s *DOKContract) GetDokByIdNotFull(ctx contractapi.TransactionContextInterface) (*DokumenShortRes, error) {
+	args := ctx.GetStub().GetStringArgs()[1:]
+
+	if len(args) != 1 {
+	}
+	id := args[0]
+	dok, err := getDokStateById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	var dokumenResult DokumenShortRes
+	dokumenResult.ID = dok.ID
+	dokumenResult.Sertifikat = dok.Sertifikat
+	dokumenResult.Status = dok.Status
+	pembeli, err := GetUserById(ctx, dok.Pembeli)
+	if err!=nil {
+		return nil, err
+	}
+	dokumenResult.Pembeli = pembeli
+	penjual, err := GetUserById(ctx, dok.Penjual)
+	if err!=nil {
+		return nil, err
+	}
+	dokumenResult.Pembeli = penjual
+	dokumenResult.Approvers = dok.Approvers
+
+	
+	return &dokumenResult, nil
+}
+
 
 func getCompleteDataDok(ctx contractapi.TransactionContextInterface, dok *Dokumen) (*DokumenResult, error) {
 	// logger.Infof("Run getCompleteDataKls function with kls id: '%s'.", perusahaan.ID)
@@ -216,7 +255,7 @@ func GetUserById(ctx contractapi.TransactionContextInterface, id string) (*User,
 func GetSertifikatById(ctx contractapi.TransactionContextInterface, id string) (*Sertifikat, error) {
 	// logger.Infof("Run getSpById function with idSp: '%s'.", idSp)
 
-	params := []string{"GetCertById", id}
+	params := []string{"GetCertByIdNotFull", id}
 	queryArgs := make([][]byte, len(params))
 	for i, arg := range params {
 		queryArgs[i] = []byte(arg)

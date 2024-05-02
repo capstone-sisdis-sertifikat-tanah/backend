@@ -30,21 +30,21 @@ type Akta struct {
 	Approvers 	 []string `json:"approvers"`
 }
 
+
 type Dokumen struct {
 	ID           string   `json:"id"`
-	Pembeli		 string   `json:"Pembeli"`
-	Penjual		 string   `json:"Penjual"`
-	Lat 		 string   `json:"lat"`
-	Long 		 string   `json:"long"`
+	Pembeli		  *User   `json:"pembeli"`
+	Penjual		  *User   `json:"penjual"`
 	Status 		 string   `json:"status"`
 	Approvers 	 []string `json:"approvers"`
+	Sertifikat   string   `json:"idSertifikat"`
 }
 
 type AktaResult struct {
 	ID           string   `json:"id"`
 	Pembeli		 *User    `json:"pembeli"`
 	Penjual		 *User    `json:"penjual"`
-	Dokumen		 *Dokumen `json:"idDokumen"`
+	Dokumen		 *Dokumen `json:"dokumen"`
 	Status 		 string   `json:"status"`
 	Approvers 	 []string `json:"approvers"` 
 	TxId		 []string `json:"TxId"`
@@ -156,6 +156,20 @@ func (s *AKTAContract) GetAktaById(ctx contractapi.TransactionContextInterface) 
 	return AktaResult, nil
 }
 
+func (s *AKTAContract) GetAktaByIdNotFull(ctx contractapi.TransactionContextInterface) (*Akta, error) {
+	args := ctx.GetStub().GetStringArgs()[1:]
+
+	if len(args) != 1 {
+	}
+	id := args[0]
+	akta, err := getAktaStateById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return akta, nil
+}
+
 
 func getCompleteAktaDok(ctx contractapi.TransactionContextInterface, akta *Akta) (*AktaResult, error) {
 	// logger.Infof("Run getCompleteDataKls function with kls id: '%s'.", perusahaan.ID)
@@ -217,7 +231,7 @@ func GetUserById(ctx contractapi.TransactionContextInterface, id string) (*User,
 func GetDokumenById(ctx contractapi.TransactionContextInterface, id string) (*Dokumen, error) {
 	// logger.Infof("Run getSpById function with idSp: '%s'.", idSp)
 
-	params := []string{"GetDokById", id}
+	params := []string{"GetDokByIdNotFull", id}
 	queryArgs := make([][]byte, len(params))
 	for i, arg := range params {
 		queryArgs[i] = []byte(arg)

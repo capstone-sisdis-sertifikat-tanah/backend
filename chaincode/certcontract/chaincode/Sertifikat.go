@@ -32,11 +32,12 @@ type SertifikatResult struct {
 	ID           string   `json:"id"`
 	Pemilik		 *User    `json:"pemilik"`
 	Akta		 *Akta    `json:"akta"`
-	Lat		 string       `json:"lat"`
+	Lat		     string   `json:"lat"`
 	Long		 string   `json:"long"`
 	TxId	 	 []string `json: "txId"` 
 	
 }
+
 
 type Akta struct {
 	ID           string   `json:"id"`
@@ -46,7 +47,6 @@ type Akta struct {
 	Penjual		 string   `json:"idPenjual"`
 	Approvers 	 []string `json:"approvers"`
 }
-
 type User struct {
 	ID          	string   `json:"id"`
 	Name   			string   `json:"name"`
@@ -153,6 +153,22 @@ func (s *CERTContract) GetCertById(ctx contractapi.TransactionContextInterface) 
 	return sertifikatResult, nil
 }
 
+func (s *CERTContract) GetCertByIdNotFull(ctx contractapi.TransactionContextInterface) (*Sertifikat, error) {
+	args := ctx.GetStub().GetStringArgs()[1:]
+
+	if len(args) != 1 {
+	}
+	id := args[0]
+	sertifikat, err := getSertifikatStateById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return sertifikat, nil
+}
+
+
+
 
 func getCompleteAktaDok(ctx contractapi.TransactionContextInterface, sertifikat *Sertifikat) (*SertifikatResult, error) {
 	// logger.Infof("Run getCompleteDataKls function with kls id: '%s'.", perusahaan.ID)
@@ -169,12 +185,16 @@ func getCompleteAktaDok(ctx contractapi.TransactionContextInterface, sertifikat 
 	}
 	sertifikatResult.Pemilik = pemilik
 
-
-	akta, err := GetAktaById(ctx, sertifikat.Akta)
-	if err!=nil {
-		return nil, err
+	if(sertifikat.Akta == ""){
+		sertifikatResult.Akta = nil
+	}else {
+		akta, err := GetAktaById(ctx, sertifikat.Akta)
+		if err!=nil {
+			return nil, err
+		}
+		sertifikatResult.Akta = akta
 	}
-	sertifikatResult.Akta = akta
+	
 	
 	txId, err := getHistorySertifikatTxIdById(ctx, sertifikat.ID)
 	if err != nil {
@@ -209,7 +229,7 @@ func GetUserById(ctx contractapi.TransactionContextInterface, id string) (*User,
 func GetAktaById(ctx contractapi.TransactionContextInterface, id string) (*Akta, error) {
 	// logger.Infof("Run getSpById function with idSp: '%s'.", idSp)
 
-	params := []string{"GetAktaById", id}
+	params := []string{"GetAktaByIdNotFull", id}
 	queryArgs := make([][]byte, len(params))
 	for i, arg := range params {
 		queryArgs[i] = []byte(arg)
@@ -228,6 +248,8 @@ func GetAktaById(ctx contractapi.TransactionContextInterface, id string) (*Akta,
 
 	return &akta, nil
 }
+
+
 
 func getHistorySertifikatTxIdById(ctx contractapi.TransactionContextInterface, id string) ([]string, error) {
 	// logger.Infof("Run getTskAddApprovalTxIdById function with id: %s.", id)

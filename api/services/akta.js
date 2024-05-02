@@ -73,7 +73,7 @@ const getAktaByIdPenjual = async (user, data) => {
 
     const result = await network.contract.submitTransaction(
       'GetAllAktaByPenjual',
-      idPembeli
+      idPenjual
     )
     network.gateway.disconnect()
     return iResp.buildSuccessResponse(
@@ -93,6 +93,7 @@ const generateIdentifier = async (user, idAkta) => {
       'aktacontract',
       user.username
     )
+    console.log(idAkta)
     const akta = JSON.parse(
       await network.contract.evaluateTransaction('GetAktaById', idAkta)
     )
@@ -100,12 +101,16 @@ const generateIdentifier = async (user, idAkta) => {
     network.gateway.disconnect()
 
     const identifier = {}
-    network = await fabric.connectToNetwork('Kementrian', 'qscc', 'admin')
+    network = await fabric.connectToNetwork(
+      'badanpertanahannasional',
+      'qscc',
+      'admin'
+    )
 
     const blockAkta = await network.contract.evaluateTransaction(
       'GetBlockByTxID',
       'bpnchannel',
-      akta.txId[akta.txId.length - 1]
+      akta.TxId[akta.TxId.length - 1]
     )
 
     identifier.akta = fabric.calculateBlockHash(
@@ -125,7 +130,11 @@ const generateIdentifier = async (user, idAkta) => {
 const verify = async (user, identifier) => {
   try {
     // find block that block hash == identifier
-    const network = await fabric.connectToNetwork('Kementrian', 'qscc', 'admin')
+    const network = await fabric.connectToNetwork(
+      'badanpertanahannasional',
+      'qscc',
+      'admin'
+    )
     const blockAkta = await network.contract.evaluateTransaction(
       'GetBlockByHash',
       'bpnchannel',
@@ -154,7 +163,7 @@ const verify = async (user, identifier) => {
     aktaNetwork.gateway.disconnect()
     const parseData = JSON.parse(akta)
 
-    parseData.signatures = await fabric.getAllSignature(parseData.txId)
+    parseData.signatures = await fabric.getAllSignature(parseData.TxId)
     console.log(parseData)
     const data = {
       akta: parseData,
@@ -183,13 +192,14 @@ const approve = async (user, args) => {
       'aktacontract',
       user.username
     )
+
     const result = JSON.parse(
       await network.contract.submitTransaction('GetAktaById', args.id)
     )
-    network.gateway.disconnect()
+
     if (
-      (result.status =
-        'Menunggu Persetujuan Penjual' && user.id === result.penjual.id)
+      result.status === 'Menunggu Persetujuan Penjual' &&
+      user.id === result.penjual.id
     ) {
       if (args.status === 'approve') {
         result.status = 'Menunggu Persetujuan Pembeli'
@@ -198,81 +208,104 @@ const approve = async (user, args) => {
         result.status === 'reject'
       }
     } else if (
-      (result.status =
-        'Menunggu Persetujuan Pembeli' && user.id === result.pembeli.id)
+      result.status === 'Menunggu Persetujuan Pembeli' &&
+      user.id === result.pembeli.id
     ) {
       if (args.status === 'approve') {
         result.status = 'Approve'
         result.approvers.push(args.idApproval)
 
         // Update Akta Tanah 1x Transaction
+
         const sertifikatNetwork = await fabric.connectToNetwork(
           user.organizationName,
           'certcontract',
           user.username
         )
-
         const userNetwork = await fabric.connectToNetwork(
           user.organizationName,
           'usercontract',
           user.username
         )
-
-        // Update Sertifikat
-
-        const sertifikat = JSON.parse(
-          await sertifikatNetwork.contract.submitTransaction(
-            'GetCertById',
-            result.dokumen.sertifikat.id
-          )
-        )
-        const user = JSON.parse(
-          await userNetwork.contract.submitTransaction(
-            'GetUserById',
-            result.pembeli.id
-          )
-        )
-        const aktaLama = sertifikat.akta
-        sertifikat.pemilik = user
-        sertifikat.akta = result
-        userNetwork.gateway.disconnect()
-
-        await sertifikatNetwork.contract.submitTransaction(
-          'UpdateSertifikat',
-          JSON.stringify(sertifikat)
-        )
-        sertifikatNetwork.gateway.disconnect()
-
-        // Update Dokumen dan Akta yang sudah tidak berlaku
-
         const dokumenNetwork = await fabric.connectToNetwork(
           user.organizationName,
           'dokcontract',
           user.username
         )
+
+        // Get All Dokumen, Sertifikat, User
         const dokumen = JSON.parse(
           await dokumenNetwork.contract.submitTransaction(
             'GetDokById',
             result.dokumen.id
           )
         )
-        dokumen.status = 'Sudah Tidak Berlaku'
-        await dokumenNetwork.contract.submitTransaction(
-          'UpdateDok',
-          JSON.stringify(dokumen)
-        )
-        dokumenNetwork.gateway.disconnect()
 
-        aktaLama.status = 'Sudah Tidak Berlaku'
-        await network.contract.submitTransaction(
-          'UpdateAkta',
-          JSON.stringify(aktaLama)
+        console.log(result)
+        const sertifikat = JSON.parse(
+          await sertifikatNetwork.contract.submitTransaction(
+            'GetCertById',
+            dokumen.sertifikat.id
+          )
         )
+
+        const userFetch = JSON.parse(
+          await userNetwork.contract.submitTransaction(
+            'GetUserById',
+            result.pembeli.id
+          )
+        )
+
+        // Update Dokumen dan Akta yang sudah tidak berlaku
+        if (sertifikat.akta) {
+          const aktaLama = JSON.parse(
+            await network.contract.submitTransaction(
+              'GetAktaById',
+              sertifikat.akta.id
+            )
+          )
+          aktaLama.status = 'Sudah Tidak Berlaku'
+          await network.contract.submitTransaction(
+            'UpdateAkta',
+            JSON.stringify(aktaLama)
+          )
+
+          const dokumenLama = JSON.parse(
+            await dokumenNetwork.contract.submitTransaction(
+              'GetDokById',
+              aktaLama.dokumen.id
+            )
+          )
+          dokumenLama.status = 'Sudah Tidak Berlaku'
+          await dokumenNetwork.contract.submitTransaction(
+            'UpdateDok',
+            JSON.stringify(dokumen)
+          )
+        }
+
+        // Update Sertifikat
+
+        sertifikat.pemilik = userFetch
+        sertifikat.akta = result
+
+        await sertifikatNetwork.contract.submitTransaction(
+          'UpdateSertifikat',
+          JSON.stringify(sertifikat)
+        )
+
+        userNetwork.gateway.disconnect()
+        sertifikatNetwork.gateway.disconnect()
+        dokumenNetwork.gateway.disconnect()
       } else if (args.status === 'reject') {
         result.status = 'reject'
       }
     } else if (result.status === 'reject') {
       return iResp.buildSuccessResponseWithoutData(200, 'Akta Telah ditolak')
+    } else if (user.id !== result.pembeli.id || user.id === result.penjual.id) {
+      return iResp.buildSuccessResponseWithoutData(
+        200,
+        'Anda Tidak Dapat Memberikan Approval'
+      )
     }
     await network.contract.submitTransaction(
       'UpdateAkta',

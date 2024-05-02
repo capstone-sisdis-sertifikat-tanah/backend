@@ -49,7 +49,7 @@ const getCertificateByIdPemilik = async (user, data) => {
     )
 
     const result = await network.contract.submitTransaction(
-      'GetCTbyIdProposal',
+      'GetAllAktaByPemilik',
       idPemilik
     )
     network.gateway.disconnect()
@@ -73,16 +73,19 @@ const generateIdentifier = async (user, idCertificate) => {
     const sertifikat = JSON.parse(
       await network.contract.evaluateTransaction('GetCertById', idCertificate)
     )
-
+    console.log(sertifikat)
     network.gateway.disconnect()
 
     const identifier = {}
-    network = await fabric.connectToNetwork('Kementrian', 'qscc', 'admin')
-
+    network = await fabric.connectToNetwork(
+      'badanpertanahannasional',
+      'qscc',
+      'admin'
+    )
     const blockSertifikat = await network.contract.evaluateTransaction(
       'GetBlockByTxID',
       'bpnchannel',
-      sertifikat.txId[sertifikat.txId.length - 1]
+      sertifikat.TxId[sertifikat.TxId.length - 1]
     )
 
     identifier.sertifikat = fabric.calculateBlockHash(
@@ -102,7 +105,11 @@ const generateIdentifier = async (user, idCertificate) => {
 const verify = async (user, identifier) => {
   try {
     // find block that block hash == identifier
-    const network = await fabric.connectToNetwork('Kementrian', 'qscc', 'admin')
+    const network = await fabric.connectToNetwork(
+      'badanpertanahannasional',
+      'qscc',
+      'admin'
+    )
     const blockSertifikat = await network.contract.evaluateTransaction(
       'GetBlockByHash',
       'bpnchannel',
@@ -110,9 +117,11 @@ const verify = async (user, identifier) => {
     )
 
     // Get data from block
+
     const argsSert =
-      BlockDecoder.decode(blockSertifikat).data.data[0].payload.data.actions[0]
+      BlockDecoder.decode(blockSertifikat).data.data[2].payload.data.actions[0]
         .payload.chaincode_proposal_payload.input.chaincode_spec.input.args
+
     const idSertifikat = Buffer.from(argsSert[1]).toString()
 
     console.log('ID Sertifikat: ', idSertifikat)
@@ -131,7 +140,7 @@ const verify = async (user, identifier) => {
     certNetwork.gateway.disconnect()
     const parseData = JSON.parse(cert)
 
-    parseData.signatures = await fabric.getAllSignature(parseData.txId)
+    parseData.signatures = await fabric.getAllSignature(parseData.TxId)
     console.log(parseData)
     const data = {
       sertifikat: parseData,

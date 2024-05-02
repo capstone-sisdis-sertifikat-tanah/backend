@@ -2,23 +2,23 @@ const aktaRouter = require('express').Router()
 const aktaController = require('../controllers/akta.js')
 const auth = require('../middleware/auth.js')
 
-aktaRouter.post('/approve', auth.onlyUser, aktaController.approve)
+aktaRouter.post('/approve', auth.verifyToken, aktaController.approve)
 aktaRouter.get(
   '/pembeli/:idPembeli',
-  auth.onlyUser,
+  auth.verifyToken,
   aktaController.getAktaByIdPembeli
 )
 aktaRouter.get(
   '/penjual/:idPenjual',
-  auth.onlyUser,
+  auth.verifyToken,
   aktaController.getAktaByIdPenjual
 )
 aktaRouter.post(
   '/identifier/:idAkta',
-  auth.onlyUser,
+  auth.verifyToken,
   aktaController.generateIdentifier
 )
-aktaRouter.post('/verify', auth.onlyUser, aktaController.verify)
+aktaRouter.post('/verify', auth.verifyToken, aktaController.verify)
 aktaRouter.get('/:idAkta', auth.verifyToken, aktaController.getById)
 aktaRouter.put('/:idAkta', auth.verifyToken, aktaController.update)
 aktaRouter.post('/', auth.verifyToken, aktaController.create)

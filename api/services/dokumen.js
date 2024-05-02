@@ -123,14 +123,18 @@ const generateIdentifier = async (user, idDokumen) => {
     )
 
     network.gateway.disconnect()
-
+    console.log(dokumen)
     const identifier = {}
-    network = await fabric.connectToNetwork('Kementrian', 'qscc', 'admin')
+    network = await fabric.connectToNetwork(
+      'badanpertanahannasional',
+      'qscc',
+      'admin'
+    )
 
     const blockDokumen = await network.contract.evaluateTransaction(
       'GetBlockByTxID',
       'bpnchannel',
-      dokumen.txId[dokumen.txId.length - 1]
+      dokumen.TxId[dokumen.TxId.length - 1]
     )
 
     identifier.dokumen = fabric.calculateBlockHash(
@@ -149,8 +153,13 @@ const generateIdentifier = async (user, idDokumen) => {
 
 const verify = async (user, identifier) => {
   try {
+    console.log('masuk ke sini')
     // find block that block hash == identifier
-    const network = await fabric.connectToNetwork('Kementrian', 'qscc', 'admin')
+    const network = await fabric.connectToNetwork(
+      'badanpertanahannasional',
+      'qscc',
+      'admin'
+    )
     const blockDokumen = await network.contract.evaluateTransaction(
       'GetBlockByHash',
       'bpnchannel',
@@ -159,11 +168,11 @@ const verify = async (user, identifier) => {
 
     // Get data from block
     const argsDokumen =
-      BlockDecoder.decode(blockDokumen).data.data[0].payload.data.actions[0]
+      BlockDecoder.decode(blockDokumen).data.data[2].payload.data.actions[0]
         .payload.chaincode_proposal_payload.input.chaincode_spec.input.args
     const idDokumen = Buffer.from(argsDokumen[1]).toString()
 
-    console.log('ID Dokumen: ', idDokumen)
+    console.log('ID Dokumen: ', JSON.parse(idDokumen).id)
     //query data ijazah, transkrip, nilai
     network.gateway.disconnect()
 
@@ -172,14 +181,14 @@ const verify = async (user, identifier) => {
       'dokcontract',
       user.username
     )
-    const dokumen = await aktaNetwork.contract.evaluateTransaction(
+    const dokumen = await dokumenNetwork.contract.evaluateTransaction(
       'GetDokById',
-      idDokumen
+      JSON.parse(idDokumen).id
     )
     dokumenNetwork.gateway.disconnect()
     const parseData = JSON.parse(dokumen)
 
-    parseData.signatures = await fabric.getAllSignature(parseData.txId)
+    parseData.signatures = await fabric.getAllSignature(parseData.TxId)
     console.log(parseData)
     const data = {
       dokumen: parseData,
@@ -213,8 +222,10 @@ const approve = async (user, args) => {
     )
     network.gateway.disconnect()
     if (
-      (result.status = 'Menunggu Persetujuan Bank' && user.userType === 'bank')
+      result.status === 'Menunggu Persetujuan Bank' &&
+      user.userType === 'bank'
     ) {
+      console.log('Bank')
       if (args.status === 'approve') {
         result.status = 'Menunggu Persetujuan Notaris'
         result.approvers.push(args.idApproval)
@@ -222,9 +233,10 @@ const approve = async (user, args) => {
         result.status = 'reject'
       }
     } else if (
-      (result.status =
-        'Menunggu Persetujuan Notaris' && user.userType === 'notaris')
+      result.status === 'Menunggu Persetujuan Notaris' &&
+      user.userType === 'notaris'
     ) {
+      console.log('notaris')
       if (args.status === 'approve') {
         result.status = 'Approve'
         result.approvers.push(args.idApproval)
