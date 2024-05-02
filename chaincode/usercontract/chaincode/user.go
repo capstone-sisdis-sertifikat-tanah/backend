@@ -98,9 +98,77 @@ func (s *UserContract) RegisterUser(ctx contractapi.TransactionContextInterface)
 	return nil
 }
 
+// UpdateUserData updates the general user data (excluding ManagerPerusahaan and AdminPerusahaan) for a user
+func (s *UserContract) UpdateUserData(ctx contractapi.TransactionContextInterface) error {
+	args := ctx.GetStub().GetStringArgs()[1:]
+
+	if len(args) != 2 {
+		logger.Errorf(ER11, 2, len(args))
+		return fmt.Errorf(ER11, 2, len(args))
+	}
+
+	userId := args[0]
+	newEmail := args[1]
+	
+	// Retrieve the user from the ledger
+	user, err := getUserStateById(ctx, userId)
+	if err != nil {
+		return err
+	}
+
+	// Check if the new email is already used by another user
+	if err := checkEmailAvailability(ctx, newEmail, userId); 
+	err != nil {
+		return err
+	}
+
+	// Update general user data
+	user.Email = newEmail
+
+	// Marshal the updated user object
+	updatedUserJSON, err := json.Marshal(user)
+	if err != nil {
+		return fmt.Errorf(ER34, err.Error())
+	}
+
+	// Update the user data in the ledger
+	err = ctx.GetStub().PutState(userId, updatedUserJSON)
+	if err != nil {
+		return fmt.Errorf(ER31, err.Error())
+	}
+
+	return nil
+}
+
 func (s *UserContract) GetUsers(ctx contractapi.TransactionContextInterface) ([]*User, error) {
     queryString := fmt.Sprintf(`{"selector":{"role":"user"}}`)
     return getQueryResultForQueryStringUser(ctx, queryString)
+}
+
+func (s *UserContract) GetAllRoles(ctx contractapi.TransactionContextInterface) ([]*User, error) {
+	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	var assets []*User
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+
+		var asset User
+		err = json.Unmarshal(queryResponse.Value, &asset)
+		if err != nil {
+			return nil, err
+		}
+		assets = append(assets, &asset)
+	}
+
+
+	return assets, nil
 }
 
 

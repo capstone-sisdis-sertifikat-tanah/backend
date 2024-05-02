@@ -41,7 +41,7 @@ const onlyNotaris = (req, res, next) => {
   try {
     const token = req.headers.authorization
     const decoded = jwt.verify(token, 'secret_key')
-    if (decoded.userType.split('-')[1] !== 'notaris') {
+    if (decoded.userType !== 'notaris') {
       return res
         .status(401)
         .send(
@@ -77,7 +77,7 @@ const onlyBank = (req, res, next) => {
   try {
     const token = req.headers.authorization
     const decoded = jwt.verify(token, 'secret_key')
-    if (decoded.userType.split('-')[1] !== 'bank') {
+    if (decoded.userType !== 'bank') {
       return res
         .status(401)
         .send(
@@ -149,7 +149,7 @@ const onlyUser = (req, res, next) => {
   try {
     const token = req.headers.authorization
     const decoded = jwt.verify(token, 'secret_key')
-    if (decoded.userType.split('-')[1] !== 'user') {
+    if (decoded.userType !== 'user') {
       return res
         .status(401)
         .send(
@@ -175,5 +175,5 @@ module.exports = {
   onlyAdminBPN,
   onlyBank,
   onlyUser,
-  onlyNotaris
+  onlyNotaris,
 }

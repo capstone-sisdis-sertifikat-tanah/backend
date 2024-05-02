@@ -32,7 +32,7 @@ const registerUser = async (req, res) => {
     data.username,
     data.email,
     data.organizationName,
-    data.role,
+    data.role
   )
   res.status(result.code).send(result)
 }
@@ -46,14 +46,25 @@ const loginUser = async (req, res) => {
   res.status(result.code).send(result)
 }
 
+const editEmail = async (req, res) => {
+  const result = await userService.editEmail(req.user, req.body)
+  res.status(result.code).send(result)
+}
 
+const editPassword = async (req, res) => {
+  const result = await userService.editPassword(req.user, req.body)
+  res.status(result.code).send(result)
+}
 
 const getAllUsers = async (req, res) => {
   const result = await userService.getAllUsers(req.user)
   res.status(result.code).send(result)
 }
 
-
+const getAllRoles = async (req, res) => {
+  const result = await userService.getAllRoles(req.user)
+  res.status(result.code).send(result)
+}
 
 module.exports = {
   enrollAdmin,
@@ -61,4 +72,7 @@ module.exports = {
   registerUser,
   loginUser,
   getAllUsers,
+  getAllRoles,
+  editEmail,
+  editPassword,
 }
