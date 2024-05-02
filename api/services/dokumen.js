@@ -1,7 +1,7 @@
 const iResp = require('../utils/response.interface.js')
 const fabric = require('../utils/fabric.js')
 const { BlockDecoder } = require('fabric-common')
-const { bufferToJson } = require('../../utils/converter.js')
+const { bufferToJson } = require('../utils/converter.js')
 const { v4: uuidv4 } = require('uuid')
 
 const create = async (user, args) => {
