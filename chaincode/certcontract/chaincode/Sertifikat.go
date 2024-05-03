@@ -277,6 +277,35 @@ func getHistorySertifikatTxIdById(ctx contractapi.TransactionContextInterface, i
 	return txIdList, nil
 }
 
+func (s *CERTContract) GetSertifikatHistory(ctx contractapi.TransactionContextInterface) ([]Sertifikat, error) {
+	args := ctx.GetStub().GetStringArgs()[1:]
+
+	if len(args) != 1 {
+	}
+	id := args[0]
+	resultsIterator, err := ctx.GetStub().GetHistoryForKey(id)
+	if err != nil {
+		return []Sertifikat{}, fmt.Errorf(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	historyObject := []Sertifikat{}
+	for resultsIterator.HasNext() {
+		response, err := resultsIterator.Next()
+		if err != nil {
+			return []Sertifikat{}, fmt.Errorf(err.Error())
+		}
+		var sertifikat Sertifikat
+		err = json.Unmarshal([]byte(response.Value), &sertifikat)
+		if err != nil {
+			return nil, fmt.Errorf(ER34, err)
+		}
+		historyObject = append(historyObject, sertifikat)
+	}
+
+	return historyObject, nil
+}
+
 func getSertifikatStateById(ctx contractapi.TransactionContextInterface, id string) (*Sertifikat, error) {
 
 	sertifikatJSON, err := ctx.GetStub().GetState(id)

@@ -62,6 +62,28 @@ const getCertificateByIdPemilik = async (user, data) => {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
   }
 }
+const getSertifikatHistory = async (user, data) => {
+  try {
+    const idSertifikat = data
+    const network = await fabric.connectToNetwork(
+      user.organizationName,
+      'certcontract',
+      user.username
+    )
+    const result = await network.contract.submitTransaction(
+      'GetSertifikatHistory',
+      idSertifikat
+    )
+    network.gateway.disconnect()
+    return iResp.buildSuccessResponse(
+      200,
+      `Successfully get sertifikat history`,
+      JSON.parse(result)
+    )
+  } catch (error) {
+    return iResp.buildErrorResponse(500, 'Something wrong', error.message)
+  }
+}
 
 const generateIdentifier = async (user, idCertificate) => {
   try {
@@ -192,6 +214,7 @@ module.exports = {
   getById,
   create,
   generateIdentifier,
+  getSertifikatHistory,
   verify,
   update,
 }

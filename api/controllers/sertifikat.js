@@ -49,6 +49,12 @@ const getCertificateByIdPemilik = async (req, res) => {
   res.status(result.code).send(result)
 }
 
+const getSertifikatHistory = async (req, res) => {
+  const data = req.params.idSertifikat
+  const result = await sertifikatService.getSertifikatHistory(req.user, data)
+  res.status(result.code).send(result)
+}
+
 const update = async (req, res) => {
   const data = req.body
   const args = {
@@ -66,6 +72,7 @@ const update = async (req, res) => {
 
 module.exports = {
   getCertificateByIdPemilik,
+  getSertifikatHistory,
   getById,
   create,
   generateIdentifier,

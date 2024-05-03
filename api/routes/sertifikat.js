@@ -12,6 +12,11 @@ sertifikatRouter.post(
   auth.verifyToken,
   sertifikatController.generateIdentifier
 )
+sertifikatRouter.get(
+  '/history/:idSertifikat',
+  auth.verifyToken,
+  sertifikatController.getSertifikatHistory
+)
 sertifikatRouter.post('/verify', auth.verifyToken, sertifikatController.verify)
 sertifikatRouter.get(
   '/:idSertifikat',
