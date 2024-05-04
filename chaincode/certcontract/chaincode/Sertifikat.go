@@ -25,7 +25,7 @@ type Sertifikat struct {
 	Akta		 string   `json:"idAkta"`
 	Lat		     string   `json:"lat"`
 	Long		 string   `json:"long"`
-	
+	Lokasi 		 string	  `json:"lokasi"`
 }
 
 type SertifikatResult struct {
@@ -34,8 +34,8 @@ type SertifikatResult struct {
 	Akta		 *Akta    `json:"akta"`
 	Lat		     string   `json:"lat"`
 	Long		 string   `json:"long"`
+	Lokasi 		 string	  `json:"lokasi"`
 	TxId	 	 []string `json: "txId"` 
-	
 }
 
 
@@ -47,12 +47,14 @@ type Akta struct {
 	Penjual		 string   `json:"idPenjual"`
 	Approvers 	 []string `json:"approvers"`
 }
+
 type User struct {
 	ID          	string   `json:"id"`
 	Name   			string   `json:"name"`
 	Email 	 		string   `json:"email"`
 	Role 			string 	 `json:"role"`
 }
+
 const (
 	ER11 		= "ER11-Incorrect number of arguments, required %d arguments, but you have %d arguments"
 	ER12        = "ER12-Akta with id '%s' already exists"
@@ -71,7 +73,7 @@ const (
 
 
 // CreateAsset issues a new asset to the world state with given details.
-func (s *CERTContract) CreateCERT(ctx contractapi.TransactionContextInterface,jsonData string) error {
+func (s *CERTContract) CreateCERT(ctx contractapi.TransactionContextInterface, jsonData string) error {
 	var sertifikat Sertifikat
 	err := json.Unmarshal([]byte(jsonData), &sertifikat)
 	if err != nil {
@@ -178,6 +180,7 @@ func getCompleteAktaDok(ctx contractapi.TransactionContextInterface, sertifikat 
 	sertifikatResult.ID = sertifikat.ID
 	sertifikatResult.Lat = sertifikat.Lat
 	sertifikatResult.Long  = sertifikat.Long
+	sertifikatResult.Lokasi = sertifikat.Lokasi
 
 	pemilik, err := GetUserById(ctx, sertifikat.Pemilik)
 	if err!=nil {
@@ -204,6 +207,7 @@ func getCompleteAktaDok(ctx contractapi.TransactionContextInterface, sertifikat 
 
 	return &sertifikatResult, nil
 }
+
 func GetUserById(ctx contractapi.TransactionContextInterface, id string) (*User, error) {
 	// logger.Infof("Run getSpById function with idSp: '%s'.", idSp)
 
@@ -226,6 +230,7 @@ func GetUserById(ctx contractapi.TransactionContextInterface, id string) (*User,
 
 	return &user, nil
 }
+
 func GetAktaById(ctx contractapi.TransactionContextInterface, id string) (*Akta, error) {
 	// logger.Infof("Run getSpById function with idSp: '%s'.", idSp)
 

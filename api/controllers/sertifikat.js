@@ -33,6 +33,7 @@ const create = async (req, res) => {
     idAkta: '',
     lat: data.lat,
     long: data.long,
+    lokasi: data.lokasi,
   }
   const result = await sertifikatService.create(req.user, args)
 
