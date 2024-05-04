@@ -1,4 +1,3 @@
-const iResp = require('../utils/response.interface.js')
 const sertifikatService = require('../services/sertifikat.js')
 const { v4: uuidv4 } = require('uuid')
 
@@ -30,8 +29,8 @@ const create = async (req, res) => {
   const data = req.body
   const args = {
     id: uuidv4(),
-    idPemilik: data.idPemilik,
-    idAkta: null,
+    idPemilik: req.user.id,
+    idAkta: '',
     lat: data.lat,
     long: data.long,
   }
@@ -41,11 +40,7 @@ const create = async (req, res) => {
 }
 
 const getCertificateByIdPemilik = async (req, res) => {
-  const data = req.params.idPemilik
-  const result = await sertifikatService.getCertificateByIdPemilik(
-    req.user,
-    data
-  )
+  const result = await sertifikatService.getCertificateByIdPemilik(req.user)
   res.status(result.code).send(result)
 }
 

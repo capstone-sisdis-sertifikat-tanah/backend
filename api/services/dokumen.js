@@ -13,27 +13,28 @@ const create = async (user, args) => {
     )
     await network.contract.submitTransaction('CreateDOK', JSON.stringify(args))
     network.gateway.disconnect()
-    return iResp.buildSuccessResponseWithoutData(
+    return iResp.buildSuccessResponse(
       200,
-      'Successfully registered a new Dokumen'
+      'Successfully registered a new Dokumen',
+      args
     )
   } catch (error) {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
   }
 }
 
-const getById = async (user, args) => {
+const getById = async (user, id) => {
   try {
     const network = await fabric.connectToNetwork(
       user.organizationName,
       'dokcontract',
       user.username
     )
-    const result = await network.contract.submitTransaction('GetDokById', args)
+    const result = await network.contract.submitTransaction('GetDokById', id)
     network.gateway.disconnect()
     return iResp.buildSuccessResponse(
       200,
-      `Successfully get Akta ${result.id}`,
+      `Successfully get Dokumen ${id}`,
       JSON.parse(result)
     )
   } catch (error) {
@@ -58,12 +59,13 @@ const getDokumenByIdPembeli = async (user, data) => {
     return iResp.buildSuccessResponse(
       200,
       `Successfully get Dokumen by id pembeli: ${idPembeli}`,
-      JSON.parse(result)
+      bufferToJson(result)
     )
   } catch (error) {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
   }
 }
+
 const getDokumenByIdPenjual = async (user, data) => {
   try {
     const idPenjual = data
@@ -81,12 +83,13 @@ const getDokumenByIdPenjual = async (user, data) => {
     return iResp.buildSuccessResponse(
       200,
       `Successfully get Dokumen by id Penjual: ${idPenjual}`,
-      JSON.parse(result)
+      bufferToJson(result)
     )
   } catch (error) {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
   }
 }
+
 const getDokumenByStatus = async (user, data) => {
   try {
     const status = data
@@ -211,6 +214,7 @@ const verify = async (user, identifier) => {
 }
 
 const approve = async (user, args) => {
+  const idApproval = user.id
   try {
     const network = await fabric.connectToNetwork(
       user.organizationName,
@@ -228,7 +232,7 @@ const approve = async (user, args) => {
       console.log('Bank')
       if (args.status === 'approve') {
         result.status = 'Menunggu Persetujuan Notaris'
-        result.approvers.push(args.idApproval)
+        result.approvers.push(idApproval)
       } else if (args.status === 'reject') {
         result.status = 'reject'
       }
@@ -239,7 +243,7 @@ const approve = async (user, args) => {
       console.log('notaris')
       if (args.status === 'approve') {
         result.status = 'Approve'
-        result.approvers.push(args.idApproval)
+        result.approvers.push(idApproval)
 
         // Create Akta Tanah
         const aktaNetwork = await fabric.connectToNetwork(

@@ -1,4 +1,3 @@
-const iResp = require('../utils/response.interface.js')
 const dokumenService = require('../services/dokumen.js')
 const { v4: uuidv4 } = require('uuid')
 
@@ -32,7 +31,7 @@ const create = async (req, res) => {
     id: uuidv4(),
     idSertifikat: data.idSertifikat,
     status: data.status,
-    idPembeli: data.idPembeli,
+    idPembeli: req.user.id,
     idPenjual: data.idPenjual,
     approvers: [],
   }

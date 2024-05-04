@@ -15,7 +15,7 @@ userRouter.post('/login', userController.loginUser)
 
 userRouter.get('/list/users', auth.verifyToken, userController.getAllUsers)
 
-userRouter.get('/list/all-roles', auth.verifyToken, userController.getAllRoles)
+userRouter.get('/list/all-roles', auth.onlyAdminBPN, userController.getAllRoles)
 
 userRouter.post('/edit/email', auth.verifyToken, userController.editEmail)
 

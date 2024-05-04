@@ -98,6 +98,42 @@ const onlyBank = (req, res, next) => {
   return next()
 }
 
+const onlyBankAndNotaris = (req, res, next) => {
+  if (!req.headers.authorization) {
+    return res
+      .status(403)
+      .send(
+        iResp.buildErrorResponse(
+          403,
+          'A token is required for authentication',
+          null
+        )
+      )
+  }
+  try {
+    const token = req.headers.authorization
+    const decoded = jwt.verify(token, 'secret_key')
+    if (!['bank', 'notaris'].includes(decoded.userType)) {
+      return res
+        .status(401)
+        .send(
+          iResp.buildErrorResponse(
+            403,
+            'Only person from bank/notaris who can access this',
+            null
+          )
+        )
+    } else {
+      req.user = decoded
+    }
+  } catch (err) {
+    return res
+      .status(401)
+      .send(iResp.buildErrorResponse(401, 'Invalid token', null))
+  }
+  return next()
+}
+
 const onlyAdminBPN = (req, res, next) => {
   if (!req.headers.authorization) {
     return res
@@ -176,4 +212,5 @@ module.exports = {
   onlyBank,
   onlyUser,
   onlyNotaris,
+  onlyBankAndNotaris,
 }

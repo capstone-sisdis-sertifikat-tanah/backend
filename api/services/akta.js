@@ -1,6 +1,7 @@
 const iResp = require('../utils/response.interface.js')
 const fabric = require('../utils/fabric.js')
 const { BlockDecoder } = require('fabric-common')
+const { bufferToJson } = require('../utils/converter.js')
 
 const create = async (user, args) => {
   try {
@@ -20,18 +21,18 @@ const create = async (user, args) => {
   }
 }
 
-const getById = async (user, args) => {
+const getById = async (user, id) => {
   try {
     const network = await fabric.connectToNetwork(
       user.organizationName,
       'aktacontract',
       user.username
     )
-    const result = await network.contract.submitTransaction('GetAktaById', args)
+    const result = await network.contract.submitTransaction('GetAktaById', id)
     network.gateway.disconnect()
     return iResp.buildSuccessResponse(
       200,
-      `Successfully get Akta ${result.id}`,
+      `Successfully get Akta ${id}`,
       JSON.parse(result)
     )
   } catch (error) {
@@ -56,7 +57,7 @@ const getAktaByIdPembeli = async (user, data) => {
     return iResp.buildSuccessResponse(
       200,
       `Successfully get akta by id pembeli: ${idPembeli}`,
-      JSON.parse(result)
+      bufferToJson(result)
     )
   } catch (error) {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
@@ -79,7 +80,7 @@ const getAktaByIdPenjual = async (user, data) => {
     return iResp.buildSuccessResponse(
       200,
       `Successfully get akta by id penjual: ${idPenjual}`,
-      JSON.parse(result)
+      bufferToJson(result)
     )
   } catch (error) {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
@@ -186,6 +187,7 @@ const verify = async (user, identifier) => {
 }
 
 const approve = async (user, args) => {
+  const idApproval = user.id
   try {
     const network = await fabric.connectToNetwork(
       user.organizationName,
@@ -203,7 +205,7 @@ const approve = async (user, args) => {
     ) {
       if (args.status === 'approve') {
         result.status = 'Menunggu Persetujuan Pembeli'
-        result.approvers.push(args.idApproval)
+        result.approvers.push(idApproval)
       } else if (args.status === 'reject') {
         result.status === 'reject'
       }
@@ -213,7 +215,7 @@ const approve = async (user, args) => {
     ) {
       if (args.status === 'approve') {
         result.status = 'Approve'
-        result.approvers.push(args.idApproval)
+        result.approvers.push(idApproval)
 
         // Update Akta Tanah 1x Transaction
 

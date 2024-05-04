@@ -1,4 +1,3 @@
-const iResp = require('../utils/response.interface.js')
 const aktaService = require('../services/akta.js')
 const { v4: uuidv4 } = require('uuid')
 

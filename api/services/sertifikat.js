@@ -1,6 +1,7 @@
 const iResp = require('../utils/response.interface.js')
 const fabric = require('../utils/fabric.js')
 const { BlockDecoder } = require('fabric-common')
+const { bufferToJson } = require('../utils/converter.js')
 
 const create = async (user, args) => {
   try {
@@ -10,28 +11,28 @@ const create = async (user, args) => {
       user.username
     )
     await network.contract.submitTransaction('CreateCERT', JSON.stringify(args))
-    network.gateway.disconnect()
-    return iResp.buildSuccessResponseWithoutData(
+    return iResp.buildSuccessResponse(
       200,
-      'Successfully registered a new carbon transaction'
+      'Successfully registered a new sertifikat',
+      args
     )
   } catch (error) {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
   }
 }
 
-const getById = async (user, args) => {
+const getById = async (user, id) => {
   try {
     const network = await fabric.connectToNetwork(
       user.organizationName,
       'certcontract',
       user.username
     )
-    const result = await network.contract.submitTransaction('GetCertById', args)
+    const result = await network.contract.submitTransaction('GetCertById', id)
     network.gateway.disconnect()
     return iResp.buildSuccessResponse(
       200,
-      `Successfully get Certificate ${result.id}`,
+      `Successfully get Certificate ${id}`,
       JSON.parse(result)
     )
   } catch (error) {
@@ -41,7 +42,7 @@ const getById = async (user, args) => {
 
 const getCertificateByIdPemilik = async (user, data) => {
   try {
-    const idPemilik = data
+    const idPemilik = user.id
     const network = await fabric.connectToNetwork(
       user.organizationName,
       'certcontract',
@@ -55,13 +56,14 @@ const getCertificateByIdPemilik = async (user, data) => {
     network.gateway.disconnect()
     return iResp.buildSuccessResponse(
       200,
-      `Successfully get carbon transaction ${idPemilik}`,
-      JSON.parse(result)
+      `Successfully get sertifikat from pemilik ${idPemilik}`,
+      bufferToJson(result)
     )
   } catch (error) {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
   }
 }
+
 const getSertifikatHistory = async (user, data) => {
   try {
     const idSertifikat = data
