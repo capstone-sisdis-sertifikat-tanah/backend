@@ -7,6 +7,11 @@ const getById = async (req, res) => {
   res.status(result.code).send(result)
 }
 
+const getList = async (req, res) => {
+  const result = await aktaService.getList(req.user)
+  res.status(result.code).send(result)
+}
+
 const generateIdentifier = async (req, res) => {
   const data = req.params.idAkta
   const result = await aktaService.generateIdentifier(req.user, data)
@@ -77,4 +82,5 @@ module.exports = {
   generateIdentifier,
   verify,
   update,
+  getList,
 }

@@ -8,7 +8,7 @@ const getById = async (req, res) => {
 }
 
 const getList = async (req, res) => {
-  const result = await dokumenService.getList(req.user, [])
+  const result = await dokumenService.getList(req.user)
   res.status(result.code).send(result)
 }
 

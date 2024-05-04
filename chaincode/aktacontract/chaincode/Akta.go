@@ -138,6 +138,22 @@ func (s *AKTAContract) ReadAllAkta(ctx contractapi.TransactionContextInterface) 
 	return constructQueryResponseFromIterator(resultsIterator)
 }
 
+func (s *AKTAContract) ReadAllDok(ctx contractapi.TransactionContextInterface) ([]*Akta, error) {
+	args := ctx.GetStub().GetStringArgs()[1:]
+
+	if len(args) != 0 {
+
+	}
+
+	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	if err != nil {
+		return nil, fmt.Errorf(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	return constructQueryResponseFromIterator(resultsIterator)
+}
+
 func (s *AKTAContract) GetAktaById(ctx contractapi.TransactionContextInterface) (*AktaResult, error) {
 	args := ctx.GetStub().GetStringArgs()[1:]
 

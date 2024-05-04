@@ -322,6 +322,26 @@ const approve = async (user, args) => {
     return iResp.buildErrorResponse(500, 'Something wrong', error.message)
   }
 }
+
+const getList = async (user) => {
+  try {
+    const network = await fabric.connectToNetwork(
+      user.organizationName,
+      'aktacontract',
+      user.username
+    )
+    const result = await network.contract.submitTransaction('ReadAllAkta')
+    network.gateway.disconnect()
+    return iResp.buildSuccessResponse(
+      200,
+      'Successfully get all Akta',
+      bufferToJson(result)
+    )
+  } catch (error) {
+    return iResp.buildErrorResponse(500, 'Something wrong', error.message)
+  }
+}
+
 const update = async (user, args) => {
   try {
     const network = await fabric.connectToNetwork(
@@ -349,4 +369,5 @@ module.exports = {
   verify,
   approve,
   update,
+  getList,
 }

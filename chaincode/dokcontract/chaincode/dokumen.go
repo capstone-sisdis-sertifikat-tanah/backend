@@ -128,7 +128,6 @@ func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorI
 	return dokumenList, nil
 }
 
-// ReadAsset returns the asset stored in the world state with given id.
 func (s *DOKContract) ReadAllDok(ctx contractapi.TransactionContextInterface) ([]*Dokumen, error) {
 	args := ctx.GetStub().GetStringArgs()[1:]
 

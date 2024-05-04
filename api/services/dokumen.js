@@ -301,7 +301,7 @@ const update = async (user, args) => {
   }
 }
 
-const getList = async (user, args) => {
+const getList = async (user) => {
   try {
     const network = await fabric.connectToNetwork(
       user.organizationName,

@@ -24,6 +24,8 @@ aktaRouter.post(
 
 aktaRouter.post('/verify', auth.verifyToken, aktaController.verify)
 
+aktaRouter.get('/', auth.verifyToken, aktaController.getList) //tested
+
 aktaRouter.get('/:idAkta', auth.verifyToken, aktaController.getById) // tested
 
 module.exports = aktaRouter
