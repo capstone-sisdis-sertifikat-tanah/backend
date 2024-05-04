@@ -40,6 +40,30 @@ const getById = async (user, id) => {
   }
 }
 
+const getAllCertificate = async (user) => {
+  try {
+    const idPemilik = user.id
+    const network = await fabric.connectToNetwork(
+      user.organizationName,
+      'certcontract',
+      user.username
+    )
+
+    const result = await network.contract.submitTransaction(
+      'getAllCertificate',
+      idPemilik
+    )
+    network.gateway.disconnect()
+    return iResp.buildSuccessResponse(
+      200,
+      `Successfully get all sertifikat`,
+      bufferToJson(result)
+    )
+  } catch (error) {
+    return iResp.buildErrorResponse(500, 'Something wrong', error.message)
+  }
+}
+
 const getCertificateByIdPemilik = async (user, data) => {
   try {
     const idPemilik = user.id
@@ -184,7 +208,7 @@ const verify = async (user, identifier) => {
     console.log('ERROR', error)
     const result = {
       success: true,
-      message: 'Sertifikat palsu',
+      message: 'Sertifikat tidak valid.',
     }
     return iResp.buildErrorResponse(500, 'Something wrong', result)
   }
@@ -212,6 +236,7 @@ const update = async (user, args) => {
 }
 
 module.exports = {
+  getAllCertificate,
   getCertificateByIdPemilik,
   getById,
   create,

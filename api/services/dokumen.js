@@ -207,7 +207,7 @@ const verify = async (user, identifier) => {
     console.log('ERROR', error)
     const result = {
       success: true,
-      message: 'Dokumen palsu',
+      message: 'Dokumen tidak valid.',
     }
     return iResp.buildErrorResponse(500, 'Something wrong', result)
   }

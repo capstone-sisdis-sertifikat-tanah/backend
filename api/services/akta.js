@@ -180,7 +180,7 @@ const verify = async (user, identifier) => {
     console.log('ERROR', error)
     const result = {
       success: true,
-      message: 'Akta palsu',
+      message: 'Akta tidak valid.',
     }
     return iResp.buildErrorResponse(500, 'Something wrong', result)
   }

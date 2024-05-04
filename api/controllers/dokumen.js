@@ -58,7 +58,7 @@ const update = async (req, res) => {
     id: req.params.idDokumen,
     idSertifikat: data.idSertifikat,
     status: data.status,
-    idPemilik: data.idPemilik,
+    idPembeli: data.idPembeli,
     idPenjual: data.idPenjual,
     approvers: data.approvers,
   }

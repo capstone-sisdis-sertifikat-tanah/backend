@@ -3,6 +3,12 @@ const sertifikatController = require('../controllers/sertifikat.js')
 const auth = require('../middleware/auth.js')
 
 sertifikatRouter.get(
+  '/',
+  auth.verifyToken,
+  sertifikatController.getAllCertificate
+) // tested
+
+sertifikatRouter.get(
   '/pemilik',
   auth.onlyUser,
   sertifikatController.getCertificateByIdPemilik

@@ -45,6 +45,11 @@ const getCertificateByIdPemilik = async (req, res) => {
   res.status(result.code).send(result)
 }
 
+const getAllCertificate = async (req, res) => {
+  const result = await sertifikatService.getAllCertificate(req.user)
+  res.status(result.code).send(result)
+}
+
 const getSertifikatHistory = async (req, res) => {
   const data = req.params.idSertifikat
   const result = await sertifikatService.getSertifikatHistory(req.user, data)
@@ -67,6 +72,7 @@ const update = async (req, res) => {
 }
 
 module.exports = {
+  getAllCertificate,
   getCertificateByIdPemilik,
   getSertifikatHistory,
   getById,

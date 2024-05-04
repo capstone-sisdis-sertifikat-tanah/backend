@@ -386,6 +386,34 @@ func (s *CERTContract) DeleteDok(ctx contractapi.TransactionContextInterface) er
 	return err
 }
 
+func (s *CERTContract) GetAllCertificate(ctx contractapi.TransactionContextInterface) ([]*Sertifikat, error) {
+	resultsIterator, err := ctx.GetStub().GetStateByRange("", "")
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	var assets []*Sertifikat
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+
+		var asset Sertifikat
+		err = json.Unmarshal(queryResponse.Value, &asset)
+		if err != nil {
+			return nil, err
+		}
+		assets = append(assets, &asset)
+	}
+
+	return assets, nil
+}
+
+
+
+
 func (s *CERTContract) GetAllAktaByPemilik(ctx contractapi.TransactionContextInterface) ([]*Sertifikat, error) {
 	args := ctx.GetStub().GetStringArgs()[1:]
 	queryString := fmt.Sprintf(`{"selector":{"idPemilik":"%s"}}`, args[0])

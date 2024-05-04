@@ -34,4 +34,6 @@ dokumenRouter.post('/', auth.onlyUser, dokumenController.create) //tested
 
 dokumenRouter.get('/', auth.verifyToken, dokumenController.getList) //tested
 
+dokumenRouter.put('/', auth.verifyToken, dokumenController.update) //tested
+
 module.exports = dokumenRouter
