@@ -94,7 +94,6 @@ const generateIdentifier = async (user, idAkta) => {
       'aktacontract',
       user.username
     )
-    console.log(idAkta)
     const akta = JSON.parse(
       await network.contract.evaluateTransaction('GetAktaById', idAkta)
     )
@@ -148,7 +147,6 @@ const verify = async (user, identifier) => {
         .payload.chaincode_proposal_payload.input.chaincode_spec.input.args
     const idAkta = Buffer.from(argsAkta[1]).toString()
 
-    console.log('ID Akta: ', idAkta)
     //query data ijazah, transkrip, nilai
     network.gateway.disconnect()
 
@@ -165,7 +163,6 @@ const verify = async (user, identifier) => {
     const parseData = JSON.parse(akta)
 
     parseData.signatures = await fabric.getAllSignature(parseData.TxId)
-    console.log(parseData)
     const data = {
       akta: parseData,
     }
@@ -177,7 +174,6 @@ const verify = async (user, identifier) => {
     }
     return iResp.buildSuccessResponse(200, 'Successfully get Akta', result)
   } catch (error) {
-    console.log('ERROR', error)
     const result = {
       success: true,
       message: 'Akta tidak valid.',
@@ -207,7 +203,7 @@ const approve = async (user, args) => {
         result.status = 'Menunggu Persetujuan Pembeli'
         result.approvers.push(idApproval)
       } else if (args.status === 'reject') {
-        result.status === 'reject'
+        result.status = 'reject'
       }
     } else if (
       result.status === 'Menunggu Persetujuan Pembeli' &&
@@ -243,7 +239,6 @@ const approve = async (user, args) => {
           )
         )
 
-        console.log(result)
         const sertifikat = JSON.parse(
           await sertifikatNetwork.contract.submitTransaction(
             'GetCertById',
