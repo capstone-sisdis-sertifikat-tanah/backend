@@ -165,14 +165,58 @@ const verify = async (user, identifier) => {
     )
 
     // Get data from block
+    const blockData = BlockDecoder.decode(blockSertifikat).data.data
 
-    const argsSert =
-      BlockDecoder.decode(blockSertifikat).data.data[2].payload.data.actions[0]
-        .payload.chaincode_proposal_payload.input.chaincode_spec.input.args
+    let certificateIndex = -1 // Initialize index for certificate object
+    let certificateID = null // Initialize certificate ID variable
 
-    const idSertifikat = Buffer.from(argsSert[1]).toString()
+    // Iterate through transactions in the block
+    for (let i = 0; i < blockData.length; i++) {
+      const transaction = blockData[i]
 
-    console.log('ID Sertifikat: ', idSertifikat)
+      // Check if the transaction contains the certificate object
+      if (
+        transaction.payload &&
+        transaction.payload.data &&
+        transaction.payload.data.actions
+      ) {
+        const actions = transaction.payload.data.actions
+
+        for (let j = 0; j < actions.length; j++) {
+          const action = actions[j]
+
+          // Check if the action payload contains the certificate ID
+          if (
+            action.payload &&
+            action.payload.chaincode_proposal_payload &&
+            action.payload.chaincode_proposal_payload.input &&
+            action.payload.chaincode_proposal_payload.input.chaincode_spec &&
+            action.payload.chaincode_proposal_payload.input.chaincode_spec
+              .input &&
+            action.payload.chaincode_proposal_payload.input.chaincode_spec.input
+              .args
+          ) {
+            const args =
+              action.payload.chaincode_proposal_payload.input.chaincode_spec
+                .input.args
+
+            // Assuming the certificate ID is always at a specific index
+            if (args.length > 1) {
+              const id = Buffer.from(args[1]).toString()
+
+              // Check if this is the latest certificate ID
+              if (certificateIndex === -1 || i > certificateIndex) {
+                certificateIndex = i
+                certificateID = id
+              }
+            }
+          }
+        }
+      }
+    }
+
+    const idSertifikat = JSON.parse(certificateID).dokumen.idSertifikat
+
     //query data ijazah, transkrip, nilai
     network.gateway.disconnect()
 
@@ -186,10 +230,10 @@ const verify = async (user, identifier) => {
       idSertifikat
     )
     certNetwork.gateway.disconnect()
+
     const parseData = JSON.parse(cert)
 
     parseData.signatures = await fabric.getAllSignature(parseData.TxId)
-    console.log(parseData)
     const data = {
       sertifikat: parseData,
     }
