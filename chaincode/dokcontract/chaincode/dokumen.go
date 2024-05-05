@@ -55,6 +55,7 @@ type Sertifikat struct {
 	Akta		 string   `json:"idAkta"`
 	Lat		     string   `json:"lat"`
 	Long		 string   `json:"long"`
+	Lokasi		 string	  `json:"lokasi"`
 	
 }
 type User struct {
