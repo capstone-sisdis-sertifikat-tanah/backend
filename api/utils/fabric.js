@@ -110,7 +110,11 @@ const calculateBlockHash = function (header) {
 }
 
 const getSignature = async (txId) => {
-  const network = await connectToNetwork('BadanPertanahanNasional', 'qscc', 'admin')
+  const network = await connectToNetwork(
+    'badanpertanahannasional',
+    'qscc',
+    'admin'
+  )
   const transaction = await network.contract.evaluateTransaction(
     'GetTransactionByID',
     channelName,
@@ -137,7 +141,7 @@ const getSignature = async (txId) => {
 }
 
 const getAllSignature = async (txIds) => {
-  const lstTx = txIds
+  const lstTx = Array.from(txIds)
   await Promise.all(
     lstTx.map(async (item, index) => {
       lstTx[index] = await getSignature(item)
