@@ -32,7 +32,7 @@ const getById = async (user, id) => {
       await network.contract.submitTransaction('GetCertById', id)
     )
 
-    const isApproved = result.akta.status === 'Approve'
+    const isApproved = result.akta?.status === 'Approve'
     const signatures = isApproved
       ? await fabric.getAllSignature(result.TxId)
       : null
